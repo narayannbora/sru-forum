@@ -1,0 +1,397 @@
+/* --- SRU FORUM: SLEEK HIGH-CONTRAST DARK THEME (ALL TEXT WHITE FIX) --- */
+
+:root {
+    /* Color Palette */
+    --bg-base: #0d1117;       
+    --bg-card: #161b22;       
+    --bg-input: #010409;      
+    
+    --primary: #5865F2;       /* Blurple/Primary Blue */
+    --primary-hover: #4752C4;
+    
+    --text-main: #f0f6fc;     /* High Contrast White (Target Color) */
+    --text-sub: #8b949e;      /* Muted Grey (For secondary info/placeholders) */
+    
+    --border: #30363d;        
+    --border-light: #3e444c;
+    --danger: #ef4444;        
+    
+    /* Shapes */
+    --card-radius: 8px;       
+    --btn-radius: 6px;
+    --pill-radius: 500px;
+    --header-height: 70px;
+}
+
+body {
+    background-color: var(--bg-base);
+    color: var(--text-main); /* CRITICAL: Sets default text color to white */
+    font-family: 'Poppins', sans-serif;
+    line-height: 1.5;
+    margin: 0;
+    padding: 0;
+    padding-top: var(--header-height);
+}
+
+/* Enforce white text on all headings and labels */
+h1, h2, h3, h4, h5, h6, label {
+    color: var(--text-main);
+}
+
+/* --- HEADER & NAVIGATION --- */
+.main-header {
+    background-color: var(--bg-card);
+    border-bottom: 1px solid var(--border);
+    position: fixed;
+    top: 0;
+    width: 100%;
+    z-index: 1000;
+    height: var(--header-height);
+}
+
+.nav-container {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 0 20px;
+    height: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo {
+    font-weight: 800;
+    color: var(--text-main);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    text-decoration: none; 
+}
+
+.logo-icon {
+    background: var(--primary);
+    color: white;
+    width: 30px;
+    height: 30px;
+    border-radius: 6px;
+    font-size: 1.2rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* FIX: NAVIGATION LINKS */
+.top-menu {
+    display: flex;
+    align-items: center;
+}
+
+.top-menu a {
+    color: var(--text-main); 
+    text-decoration: none;
+    font-weight: 600;
+    margin-left: 15px;
+    padding: 8px 0;
+    transition: color 0.2s;
+}
+
+.top-menu a:hover {
+    color: var(--primary);
+}
+
+/* Profile Avatar Styling */
+.profile-avatar-link {
+    margin-left: 15px; 
+    margin-right: 5px;
+    padding: 0;
+    height: 35px; 
+    width: 35px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.profile-avatar-placeholder {
+    width: 35px;
+    height: 35px;
+    background: var(--primary); 
+    color: white;
+    border-radius: 50%;
+    font-size: 1rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: transform 0.2s;
+    border: 2px solid transparent; 
+}
+
+.profile-avatar-placeholder:hover {
+    transform: scale(1.05);
+    border-color: var(--text-main); 
+}
+
+
+/* --- MAIN BUTTON STYLES --- */
+.btn-signup, .btn-logout, button {
+    background-color: var(--primary);
+    color: white;
+    padding: 10px 20px;
+    border-radius: var(--btn-radius);
+    font-weight: 700;
+    border: 1px solid var(--primary);
+    transition: all 0.2s;
+    font-size: 0.9rem;
+    cursor: pointer;
+    text-decoration: none; 
+    display: inline-block; 
+    text-align: center;
+}
+
+.btn-signup:hover {
+    background-color: var(--primary-hover);
+    border-color: var(--primary-hover);
+}
+
+.btn-logout {
+    background-color: transparent;
+    border: 1px solid var(--border);
+    color: var(--text-main); 
+}
+
+.btn-logout:hover {
+    background-color: var(--border);
+}
+
+
+/* --- CONTENT AND FORMS --- */
+
+.content-wrapper { padding: 20px; }
+main { max-width: 1000px; margin: 0 auto; padding: 20px 0; } 
+
+.card {
+    background-color: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--card-radius);
+    padding: 16px; 
+    margin-bottom: 10px;
+    box-shadow: none; 
+    transition: transform 0.2s, border-color 0.2s;
+}
+
+/* GLOBAL FORM STYLES */
+input, select, textarea {
+    width: 100%;
+    box-sizing: border-box;
+    margin-bottom: 15px;
+    background-color: var(--bg-input);
+    border: 1px solid var(--border);
+    color: var(--text-main) !important; 
+    padding: 12px 15px;
+    border-radius: var(--btn-radius);
+}
+
+input::placeholder, textarea::placeholder {
+    color: var(--text-sub);
+    opacity: 1;
+}
+
+/* --- LANDING PAGE STYLES --- */
+
+.hero-section {
+    padding: 60px 20px;
+    text-align: center;
+    max-width: 900px;
+    margin: 40px auto;
+}
+
+.hero-section h1 {
+    font-size: 3rem;
+    font-weight: 800;
+    margin-bottom: 10px;
+}
+
+.lead-text {
+    color: var(--text-sub);
+    font-size: 1.2rem;
+    margin-bottom: 30px;
+}
+
+.cta-group {
+    display: flex;
+    flex-wrap: wrap; 
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+}
+
+.btn-large {
+    padding: 12px 25px;
+    font-size: 1rem;
+    min-width: 180px; 
+}
+
+.btn-login-secondary {
+    color: var(--text-main);
+    text-decoration: none;
+    font-weight: 600;
+    transition: color 0.2s;
+}
+
+.btn-login-secondary:hover {
+    color: var(--primary);
+}
+
+.feature-showcase {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+    padding-top: 20px;
+    padding-bottom: 50px;
+}
+
+.feature-card {
+    padding: 20px;
+    text-align: left;
+    height: 100%; 
+}
+
+.feature-card h3 {
+    color: var(--primary);
+    font-size: 1.4rem;
+    margin-top: 0;
+}
+
+.feature-link {
+    color: var(--primary);
+    text-decoration: none;
+    font-weight: 600;
+    display: block;
+    margin-top: 15px;
+}
+
+/* --- PROFILE PAGE STYLES --- */
+.profile-layout {
+    display: flex;
+    gap: 30px;
+    align-items: flex-start;
+    padding: 20px 0;
+}
+
+.profile-summary-card {
+    min-width: 250px;
+    text-align: center;
+    padding: 30px 20px;
+}
+
+.profile-avatar-large {
+    width: 80px;
+    height: 80px;
+    background: var(--primary);
+    color: white;
+    border-radius: 50%;
+    margin: 0 auto 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2.5rem;
+    font-weight: bold;
+}
+
+.profile-stats-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+    font-size: 0.9rem;
+}
+
+.profile-activity-feed {
+    flex-grow: 1;
+}
+
+/* --- UTILITY STYLES FOR REFINED FORMS (NEW ADDITIONS) --- */
+
+/* Standardize form links */
+.form-footer-link {
+    color: var(--text-sub);
+    text-align: center;
+    font-size: 0.9rem;
+    margin-top: 15px;
+}
+
+.primary-link {
+    color: var(--primary);
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.form-card {
+    max-width: 400px; /* Constrain auth forms */
+    margin: 0 auto;
+    padding: 30px;
+}
+
+.form-title {
+    color: var(--text-main);
+    text-align: center;
+    margin-top: 0;
+    margin-bottom: 30px;
+}
+
+.form-divider {
+    margin: 20px 0;
+    border-top: 1px solid var(--border);
+}
+
+/* ADMIN STYLES (Red Accent) */
+.admin-card {
+    max-width: 600px;
+    /* Uses Red Accent for distinction */
+    border-top: 5px solid var(--danger); 
+}
+
+.admin-button {
+    background-color: #2563eb; /* Use a strong blue for admin actions */
+    margin-top: 20px;
+    width: 100%;
+}
+
+
+/* --- RESPONSIVENESS --- */
+@media (max-width: 768px) {
+    .profile-layout {
+        flex-direction: column;
+    }
+    .profile-summary-card {
+        min-width: 100%;
+        box-sizing: border-box;
+    }
+}
+@media (max-width: 600px) {
+    .nav-container {
+        padding: 0 10px;
+    }
+
+    .top-menu {
+        gap: 5px;
+    }
+    
+    .hero-section h1 {
+        font-size: 2.2rem;
+    }
+    
+    .lead-text {
+        font-size: 1rem;
+    }
+
+    .cta-group {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .btn-large {
+        width: 100%;
+        box-sizing: border-box;
+    }
+}

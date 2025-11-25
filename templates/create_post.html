@@ -1,0 +1,64 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="card form-card">
+    
+    {% set category = request.args.get('category') %}
+    {% set price_display = 'block' if category == 'market' else 'none' %}
+
+    {% if category == 'market' %}
+        <h2>💰 Sell an Item</h2>
+    {% elif category == 'skill' %}
+        <h2>🎓 Offer or Request a Skill</h2>
+    {% elif category == 'forum' %}
+        <h2>💬 Start a Discussion</h2>
+    {% else %}
+        <h2>Create New Post</h2>
+    {% endif %}
+
+    <form method="POST" action="">
+        
+        <label>Title</label>
+        <input type="text" name="title" placeholder="e.g., Blue Kettle or Python Tutor" required>
+
+        {% if category %}
+            <input type="hidden" name="category" id="category" value="{{ category }}">
+            
+            <div style="background: #000000; padding: 10px; border-radius: 8px; margin-bottom: 15px; font-size: 0.9rem;">
+                Posting to: <strong>{{ category|upper }}</strong> section
+            </div>
+
+        {% else %}
+            <label>Category</label>
+            <select name="category" id="category" onchange="togglePrice()">
+                <option value="skill">Skill Offer/Want</option>
+                <option value="market">Marketplace (Sell/Buy)</option>
+                <option value="lost">Lost & Found</option>
+                <option value="forum">General Discussion</option>
+            </select>
+        {% endif %}
+
+        <div id="price-div" style="display: {{ price_display }};">
+            <label>Price (₹)</label>
+            <input type="text" name="price" placeholder="e.g., 500">
+        </div>
+
+        <label>Description</label>
+        <textarea name="content" rows="5" placeholder="Describe details..." required></textarea>
+
+        <button type="submit">Post It!</button>
+    </form>
+</div>
+
+<script>
+    function togglePrice() {
+        var cat = document.getElementById("category").value;
+        var priceDiv = document.getElementById("price-div");
+        
+        if(cat === 'market') {
+            priceDiv.style.display = "block";
+        } else {
+            priceDiv.style.display = "none";
+        }
+    }
+</script>
+{% endblock %}

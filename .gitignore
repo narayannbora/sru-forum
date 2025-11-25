@@ -1,0 +1,96 @@
+==================================
+
+SRU Forum - Comprehensive Git Ignore
+
+==================================
+
+----------------------------------
+
+1. PYTHON AND VIRTUAL ENVIRONMENTS
+
+----------------------------------
+
+Byte-code and compilation files
+
+pycache/
+*.pyc
+*.pyd
+*.so
+
+Virtual environment files
+
+venv/
+env/
+.venv/
+.python-version
+.vscode/pylint.txt
+
+Package installation files
+
+.Python
+.tox/
+.pytest_cache/
+*.egg
+*.whl
+*.mo
+*.pot
+*.log
+
+----------------------------------
+
+2. FLASK, SQLITE, AND ASSETS
+
+----------------------------------
+
+CRITICAL: Do not commit the local database file
+
+skillswap.db
+*.sqlite
+*.db
+
+Session data, if used
+
+flask_session/
+
+Uploaded media (if not handled by S3/external storage)
+
+/uploads/
+
+----------------------------------
+
+3. EDITOR AND IDE FILES
+
+----------------------------------
+
+Visual Studio Code (VS Code)
+
+.vscode/*
+!/.vscode/settings.json # Optional: if you want shared settings
+!/.vscode/tasks.json
+!/.vscode/launch.json
+!/.vscode/extensions.json
+!.vscode/
+.history
+
+PyCharm/IntelliJ
+
+.idea/
+
+----------------------------------
+
+4. OS AND BUILD ARTIFACTS
+
+----------------------------------
+
+Operating System Files
+
+.DS_Store
+Thumbs.db
+
+Build/Distributions
+
+dist/
+build/
+*.tar.gz
+*.zip
+*.egg-info/

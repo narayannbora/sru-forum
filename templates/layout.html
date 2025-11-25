@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>SRU Forum</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <header class="main-header">
+        <div class="nav-container">
+            <a href="{{ url_for('home') }}" class="logo">
+                <span class="logo-icon">SRU</span> FORUM
+            </a>
+            <div class="top-menu">
+                <a href="{{ url_for('mess') }}">Mess Menu</a>
+                <a href="{{ url_for('skills') }}">SkillSwap</a>
+                <a href="{{ url_for('market') }}">Marketplace</a>
+                <a href="{{ url_for('forum') }}">Forum</a>
+
+                {% if current_user.is_authenticated %}
+                    <a href="{{ url_for('new_post') }}" class="btn-signup">New Post</a>
+                    <a href="{{ url_for('profile') }}" class="profile-avatar-link">
+                        <div class="profile-avatar-placeholder">
+                            {{ current_user.username[:1]|upper }}{{ current_user.username[1:2]|upper }}
+                        </div>
+                    </a>
+                    <a href="{{ url_for('logout') }}" class="btn-logout">Logout</a>
+                {% else %}
+                    <a href="{{ url_for('login') }}">Login</a>
+                    <a href="{{ url_for('register') }}" class="btn-signup">Register</a>
+                {% endif %}
+            </div>
+        </div>
+    </header>
+
+    <div class="content-wrapper">
+        <main>
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="alert alert-{{ category }}">{{ message }}</div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+
+            {% block content %}{% endblock %}
+
+        </main>
+    </div>
+</body>
+</html>

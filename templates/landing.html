@@ -1,0 +1,43 @@
+{% extends "layout.html" %}
+
+{% block content %}
+    
+    <section class="hero-section text-center">
+        <h1>Connect. Swap. Dine.</h1>
+        <p class="lead-text">
+            Your centralized hub for campus life at SRU. Find study partners, buy used goods,
+            and review the daily mess menu, all in one place.
+        </p>
+        
+        <div class="cta-group">
+            <a href="{{ url_for('register') }}" class="btn-signup btn-large">Join the SRU Community</a>
+            
+            <a href="{{ url_for('login') }}" class="btn-login-secondary">Already have an account? Log In</a>
+        </div>
+    </section>
+
+    <hr style="border-color: var(--border); margin: 60px 0;">
+
+    <section class="feature-showcase">
+        
+        <div class="card feature-card">
+            <h3>🤝 SkillSwap</h3>
+            <p>Offer your programming expertise or find a tutor for that tough calculus class. Exchange knowledge freely, securely within the campus network.</p>
+            <a href="{{ url_for('skills') }}" class="feature-link">Browse Skills →</a>
+        </div>
+        
+        <div class="card feature-card">
+            <h3>🛍️ Marketplace</h3>
+            <p>Buy and sell textbooks, mini-fridges, or find that lost item. The dedicated hub for campus commerce and Lost & Found posts.</p>
+            <a href="{{ url_for('market') }}" class="feature-link">Shop & Sell →</a>
+        </div>
+        
+        <div class="card feature-card">
+            <h3>🍽️ Mess Menu & Votes</h3>
+            <p>See today's menu at a glance and cast your vote (up or down) on the food quality. Leave reviews and comments for the kitchen staff!</p>
+            <a href="{{ url_for('mess') }}" class="feature-link">View Today's Menu →</a>
+        </div>
+        
+    </section>
+
+{% endblock content %}

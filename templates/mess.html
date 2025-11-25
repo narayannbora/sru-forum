@@ -1,0 +1,136 @@
+{% extends "layout.html" %}
+{% block content %}
+
+    {# --- RECURSIVE MACRO FOR COMMENT THREADING --- #}
+    {% macro render_comments(comments) %}
+        <div class="comment-list" style="display: flex; flex-direction: column; gap: 15px;">
+            {% for comment in comments %}
+            {# Determine nesting depth for indentation #}
+            {% set depth = 0 %}
+            {% if comment.parent %}
+                {% set depth = 1 %}
+            {% endif %}
+
+            <div style="display: flex; gap: 15px; padding-bottom: 15px; border-bottom: 1px solid var(--border); margin-left: {{ 30 * depth }}px; background: var(--bg-card);">
+                
+                <div style="min-width: 40px; height: 40px; background: var(--bg-input); color: var(--text-sub); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold;">
+                    {{ comment.comment_author.username[0]|upper }}
+                </div>
+                
+                <div style="flex-grow: 1;">
+                    <div style="display: flex; align-items: baseline; gap: 10px;">
+                        <strong style="font-size: 0.95rem; color: var(--text-main);">{{ comment.comment_author.username }}</strong>
+                        <span style="font-size: 0.75rem; color: var(--text-sub);">{{ comment.date_posted.strftime('%H:%M') }}</span>
+                    </div>
+                    
+                    <p style="margin: 4px 0 10px 0; color: var(--text-sub); font-size: 0.9rem;">{{ comment.body }}</p>
+
+                    {# REPLY FORM TOGGLE #}
+                    <a href="#" onclick="document.getElementById('reply-form-{{ comment.id }}').style.display='flex'; this.style.display='none'; return false;" 
+                       style="color: var(--primary); text-decoration: none; font-size: 0.8rem; font-weight: 600;">Reply</a>
+
+                    {# REPLY FORM #}
+                    <form id="reply-form-{{ comment.id }}" action="{{ url_for('mess_comment') }}" method="POST" style="display: none; gap: 10px; margin-top: 10px; margin-bottom: 5px;">
+                        <input type="hidden" name="parent_id" value="{{ comment.id }}">
+                        <input type="text" name="comment" placeholder="Your reply..." required style="margin: 0; border-radius: 50px; padding-left: 20px; flex-grow: 1; height: 35px; font-size: 0.9rem;">
+                        <button type="submit" style="width: auto; border-radius: 50px; padding: 0 15px; margin: 0; background: var(--primary); font-size: 0.9rem;">Post</button>
+                    </form>
+                    
+                    {# RECURSIVE CALL for nested replies #}
+                    {% if comment.replies.all() %}
+                        {{ render_comments(comment.replies.order_by(MessComment.date_posted.asc()).all()) }}
+                    {% endif %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    {% endmacro %}
+
+
+    <div style="text-align: center; margin-bottom: 40px;">
+        <h1 style="margin-bottom: 5px; font-size: 2rem; color: var(--text-main);">🍛 Daily Mess Menu</h1>
+        <div style="display: inline-block; background: #e0e7ff; color: #4338ca; padding: 6px 16px; border-radius: 50px; font-weight: 600; font-size: 0.9rem;">
+            {{ today.strftime('%A, %d %B %Y') }}
+        </div>
+    </div>
+
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 25px; margin-bottom: 50px;">
+        {% for type in ['Breakfast', 'Lunch', 'Snack', 'Dinner'] %}
+        {% set meal = menu_data[type] %}
+        
+        <div class="card" style="padding: 0; overflow: hidden; display: flex; flex-direction: column; height: 100%;">
+            
+            {% set header_color = '#fef3c7' %} {% set text_color = '#d97706' %} {% set icon = '☕' %}
+            
+            {% if type == 'Lunch' %}
+                {% set header_color = '#dcfce7' %} {% set text_color = '#166534' %} {% set icon = '🍱' %}
+            {% elif type == 'Snack' %}
+                {% set header_color = '#fee2e2' %} {% set text_color = '#b91c1c' %} {% set icon = '🥨' %}
+            {% elif type == 'Dinner' %}
+                {% set header_color = '#e0e7ff' %} {% set text_color = '#3730a3' %} {% set icon = '🍽️' %}
+            {% endif %}
+
+            <div style="background: {{ header_color }}; padding: 15px 20px; border-bottom: 1px solid rgba(0,0,0,0.05); display: flex; justify-content: space-between; align-items: center;">
+                <h3 style="margin: 0; color: {{ text_color }}; font-size: 1.1rem; display: flex; align-items: center; gap: 8px;">
+                    <span style="font-size: 1.3rem;">{{ icon }}</span> {{ type }}
+                </h3>
+            </div>
+
+            <div style="padding: 20px; flex-grow: 1;">
+                <ul style="margin: 0; padding-left: 20px; color: var(--text-sub); line-height: 1.8;">
+                    {% for item in meal.food_list %}
+                        <li style="margin-bottom: 5px;">{{ item.strip() }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+
+            <div style="background: var(--bg-input); padding: 15px 20px; border-top: 1px solid var(--border);">
+                {% if meal.has_voted %}
+                    <div style="text-align: center; padding: 8px; background: #ecfdf5; border: 1px solid #050505; border-radius: 8px; color: #047857; font-weight: bold; font-size: 0.9rem;">
+                        ✅ Voted
+                    </div>
+                    <div style="display: flex; justify-content: center; gap: 20px; margin-top: 10px; font-size: 0.85rem; color: var(--text-sub);">
+                        <span>👍 {{ meal.upvotes }}</span>
+                        <span>👎 {{ meal.downvotes }}</span>
+                    </div>
+                {% else %}
+                    <div style="display: flex; gap: 10px;">
+                        <a href="{{ url_for('vote_mess', menu_id=meal.id, vote_type=1) }}" style="flex: 1; text-decoration: none;">
+                            <button style="width: 100%; background: var(--bg-card); border: 1px solid var(--border); color: #16a34a; padding: 8px; border-radius: 8px; font-weight: bold; display: flex; justify-content: center; align-items: center; gap: 5px; transition: all 0.2s; box-shadow: 0 1px 2px rgba(0,0,0,0.05);">
+                                😋 <span style="font-size: 0.8rem;">{{ meal.upvotes }}</span>
+                            </button>
+                        </a>
+                        <a href="{{ url_for('vote_mess', menu_id=meal.id, vote_type=-1) }}" style="flex: 1; text-decoration: none;">
+                            <button style="width: 100%; background: var(--bg-card); border: 1px solid var(--border); color: #dc2626; padding: 8px; border-radius: 8px; font-weight: bold; display: flex; justify-content: center; align-items: center; gap: 5px; transition: all 0.2s; box-shadow: 0 1px 2px rgba(0,0,0,0.05);">
+                                🤢 <span style="font-size: 0.8rem;">{{ meal.downvotes }}</span>
+                            </button>
+                        </a>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    
+    <div class="card" style="border-top: 4px solid #4f46e5;">
+        <h2 style="margin-top: 0; margin-bottom: 20px; display: flex; align-items: center; gap: 10px; color: var(--text-main);">
+            💬 Food Reviews
+        </h2>
+
+        {# Top-level comment submission form #}
+        <form action="{{ url_for('mess_comment') }}" method="POST" style="display: flex; gap: 10px; margin-bottom: 30px;">
+            <input type="text" name="comment" placeholder="Compliments to the chef? Or too much salt?" required style="margin: 0; border-radius: 50px; padding-left: 20px;">
+            <input type="hidden" name="parent_id" value=""> {# No parent_id for top-level comment #}
+            <button type="submit" style="width: auto; border-radius: 50px; padding: 0 25px; margin: 0; background: #4f46e5;">Post</button>
+        </form>
+
+        <div class="comments-section">
+            {% if comments|length == 0 %}
+                <p style="text-align: center; color: var(--text-sub); font-style: italic;">No reviews yet. Be the first!</p>
+            {% else %}
+                {{ render_comments(comments) }}
+            {% endif %}
+        </div>
+    </div>
+
+{% endblock %}

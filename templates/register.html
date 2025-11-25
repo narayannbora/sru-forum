@@ -1,0 +1,13 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="card form-card">
+    <h2 class="form-title">Join the Campus Hub</h2>
+    <form method="POST" action="">
+        <input type="text" name="username" placeholder="Username" required>
+        <input type="email" name="email" placeholder="College Email" required>
+        <input type="password" name="password" placeholder="Password" required>
+        <button type="submit">Sign Up</button>
+    </form>
+    <p class="form-footer-link">Already have an account? <a href="{{ url_for('login') }}" class="primary-link">Login</a></p>
+</div>
+{% endblock %}

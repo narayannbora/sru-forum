@@ -1,0 +1,97 @@
+{% extends "layout.html" %}
+
+{% macro render_post_comments(comments, PostComment, post_id) %}
+    <div class="comment-list" style="display: flex; flex-direction: column; gap: 15px;">
+        {% for comment in comments %}
+        {# Determine nesting depth for indentation #}
+        {% set depth = 0 %}
+        {% if comment.parent_id %} 
+            {% set depth = 1 %}
+        {% endif %}
+
+        <div class="card" style="padding: 15px; margin-left: {{ 30 * depth }}px; border-left: 3px solid var(--border-light); background: {% if depth > 0 %}var(--bg-input){% else %}var(--bg-card){% endif %};">
+            <div style="display: flex; gap: 15px;">
+                <div style="min-width: 30px; height: 30px; background: var(--primary); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 0.9rem;">
+                    {{ comment.comment_author.username[0]|upper }}
+                </div>
+                
+                <div style="flex-grow: 1;">
+                    <div style="display: flex; align-items: baseline; gap: 10px;">
+                        <strong style="font-size: 0.95rem; color: var(--text-main);">{{ comment.comment_author.username }}</strong>
+                        <span style="font-size: 0.75rem; color: var(--text-sub);">{{ comment.date_posted.strftime('%d %b %H:%M') }}</span>
+                    </div>
+                    
+                    <p style="margin: 4px 0 10px 0; color: var(--text-sub); font-size: 0.9rem; white-space: pre-wrap;">{{ comment.body }}</p>
+
+                    {# REPLY FORM TOGGLE #}
+                    <a href="#" onclick="document.getElementById('reply-form-{{ comment.id }}').style.display='flex'; this.style.display='none'; return false;" 
+                       style="color: var(--primary); text-decoration: none; font-size: 0.8rem; font-weight: 600;">Reply</a>
+
+                    {# REPLY FORM #}
+                    <form id="reply-form-{{ comment.id }}" action="{{ url_for('post_comment', post_id=post_id) }}" method="POST" style="display: none; gap: 10px; margin-top: 10px;">
+                        <input type="hidden" name="parent_id" value="{{ comment.id }}">
+                        <input type="text" name="comment" placeholder="Your reply..." required style="margin: 0; border-radius: 50px; padding-left: 15px; flex-grow: 1; height: 30px; font-size: 0.9rem;">
+                        <button type="submit" style="width: auto; border-radius: 50px; padding: 0 15px; margin: 0; background: var(--primary);">Post</button>
+                    </form>
+                    
+                    {# RECURSIVE CALL for nested replies #}
+                    {% if comment.replies.all() %}
+                        {{ render_post_comments(comment.replies.order_by(PostComment.date_posted.asc()).all(), PostComment, post_id) }}
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+{% endmacro %}
+
+
+{% block content %}
+    
+    {% set border_color = '#9333ea' %}
+    {% if post.category == 'skill' %}{% set border_color = '#0079D3' %}
+    {% elif post.category == 'market' %}{% set border_color = '#46D160' %}
+    {% elif post.category == 'lost' %}{% set border_color = '#FF8717' %}{% endif %}
+
+    <div class="card" style="padding: 25px; border-left: 5px solid {{ border_color }}; margin-bottom: 30px;">
+        
+        <h1 style="margin-top: 0; margin-bottom: 5px; font-size: 1.8rem;">{{ post.title }}</h1>
+        
+        <p style="font-size: 0.9rem; color: var(--text-sub); margin: 0 0 15px 0; border-bottom: 1px dashed var(--border-light); padding-bottom: 10px;">
+            Posted by u/<strong>{{ post.author.username }}</strong> on {{ post.date_posted.strftime('%d %b, %Y at %H:%M') }}
+            <span style="background: var(--bg-input); padding: 2px 8px; border-radius: 4px; margin-left: 15px; text-transform: uppercase;">{{ post.category }}</span>
+            {% if post.price %}<span style="color: var(--primary); margin-left: 15px; font-weight: bold;">Price: ₹{{ post.price }}</span>{% endif %}
+        </p>
+
+        <p style="font-size: 1rem; color: var(--text-main); line-height: 1.7; white-space: pre-wrap;">
+            {{ post.content }}
+        </p>
+        
+        {% if post.author == current_user %}
+            <form action="{{ url_for('delete_post', post_id=post.id) }}" method="POST" style="margin-top: 20px; text-align: right;">
+                <button type="submit" style="background: none; border: 1px solid var(--danger); color: var(--danger); font-size: 0.9rem; padding: 5px 15px; border-radius: 6px;">🗑️ Delete Post</button>
+            </form>
+        {% endif %}
+    </div>
+
+    <div class="card" style="border-top: 4px solid var(--primary);">
+        <h2 style="margin-top: 0; margin-bottom: 20px; font-size: 1.4rem;">💬 Discussion ({{ comments|length }} Top-Level)</h2>
+
+        {# Top-level comment submission form #}
+        <form action="{{ url_for('post_comment', post_id=post.id) }}" method="POST" style="display: flex; gap: 10px; margin-bottom: 30px;">
+            <input type="text" name="comment" placeholder="Add a comment or question..." required style="margin: 0; border-radius: 50px; padding-left: 20px;">
+            <input type="hidden" name="parent_id" value="">
+            <button type="submit" style="width: auto; border-radius: 50px; padding: 0 25px; margin: 0; background: var(--primary);">Post Comment</button>
+        </form>
+
+        <div class="comments-section">
+            {% if comments|length == 0 %}
+                <p style="text-align: center; color: var(--text-sub); font-style: italic;">No comments yet. Be the first to start the discussion!</p>
+            {% else %}
+                {# Initial call to the recursive macro #}
+                {{ render_post_comments(comments, PostComment, post.id) }}
+            {% endif %}
+        </div>
+    </div>
+
+{% endblock content %}

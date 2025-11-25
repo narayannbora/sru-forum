@@ -1,0 +1,70 @@
+{% extends "layout.html" %}
+{% block content %}
+
+    <div style="display: flex; gap: 30px; margin-bottom: 40px; padding: 20px; border-bottom: 1px solid var(--border); align-items: flex-start;">
+        
+        <div class="card" style="padding: 30px 40px; min-width: 250px; text-align: center; border-left: 5px solid var(--primary); background: var(--bg-input);">
+            
+            <div style="width: 80px; height: 80px; background: var(--primary); color: white; border-radius: 50%; margin: 0 auto 15px; display: flex; align-items: center; justify-content: center; font-size: 2.5rem; font-weight: bold;">
+                {{ current_user.username[0]|upper }}
+            </div>
+
+            <h2 style="margin: 0 0 5px 0; color: var(--text-main);">{{ current_user.username }}</h2>
+            <p style="color: var(--text-sub); font-size: 0.9rem; margin: 0;">{{ current_user.email }}</p>
+
+            <hr style="margin: 20px 0; border-top: 1px solid var(--border);">
+
+            <div style="display: flex; justify-content: space-around; font-size: 0.9rem;">
+                <span style="color: var(--text-sub);">Posts: <strong style="color: var(--text-main);">{{ posts|length }}</strong></span>
+                {% if current_user.is_admin %}
+                    <span style="color: var(--danger);">Status: <strong>ADMIN</strong></span>
+                {% else %}
+                    <span style="color: #46D160;">Status: <strong>Student</strong></span>
+                {% endif %}
+            </div>
+            
+            <a href="#" style="margin-top: 20px; display: block; color: var(--primary); font-size: 0.9rem;">Edit Profile</a>
+        </div>
+
+        <div style="flex-grow: 1;">
+            <h1 style="margin-top: 0; margin-bottom: 20px;">Your Recent Activity</h1>
+            
+            {% if posts|length == 0 %}
+                <div class="card" style="padding: 40px; text-align: center; color: var(--text-sub); border: 1px dashed var(--border);">
+                    <h3>No posts yet.</h3>
+                    <p>Start a discussion or list an item!</p>
+                </div>
+            {% else %}
+                
+                <div style="display: flex; flex-direction: column; gap: 15px;">
+                {% for post in posts %}
+                    <div class="card" style="padding: 15px; border-left: 4px solid 
+                        {% if post.category == 'skill' %}#0079D3
+                        {% elif post.category == 'market' %}#46D160
+                        {% elif post.category == 'lost' %}#FF8717
+                        {% else %}#9333ea{% endif %};">
+                        
+                        <div style="font-size: 0.8rem; color: var(--text-sub); margin-bottom: 8px;">
+                            Posted in <strong style="text-transform: uppercase; color: var(--text-main);">{{ post.category }}</strong> on {{ post.date_posted.strftime('%b %d, %Y') }}
+                        </div>
+
+                        <h3 style="margin: 0 0 5px 0; font-size: 1.1rem; color: var(--text-main);">
+                            {{ post.title }}
+                            {% if post.price %}<span style="color: var(--primary); margin-left: 10px; font-size: 0.9em;">(₹{{ post.price }})</span>{% endif %}
+                        </h3>
+                        
+                        <p style="font-size: 0.9rem; color: var(--text-sub); margin: 0 0 10px 0;">
+                            {{ post.content | truncate(100) }} 
+                        </p>
+                        
+                        <div style="margin-top: 10px;">
+                            <a href="#" style="color: var(--primary); font-weight: 600; font-size: 0.9rem;">View Post →</a>
+                        </div>
+                    </div>
+                {% endfor %}
+                </div>
+            {% endif %}
+        </div>
+    </div>
+    
+{% endblock %}

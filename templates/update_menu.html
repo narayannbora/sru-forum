@@ -1,0 +1,27 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="card form-card admin-card">
+    <h2>🛠️ Update Mess Menu</h2>
+    <form method="POST" action="">
+        <label>Select Date</label>
+        <!-- Relies on global input styles for dark background/text -->
+        <input type="date" name="date" value="{{ today }}" required>
+        
+        <hr class="form-divider">
+        
+        <label>🍳 Breakfast</label>
+        <input type="text" name="Breakfast" placeholder="e.g. Idli, Sambar" required>
+        
+        <label>🍱 Lunch</label>
+        <input type="text" name="Lunch" placeholder="e.g. Rice, Dal" required>
+        
+        <label>🥨 Snack</label>
+        <input type="text" name="Snack" placeholder="e.g. Tea, Biscuits" required>
+        
+        <label>🍽️ Dinner</label>
+        <input type="text" name="Dinner" placeholder="e.g. Chapati, Curry" required>
+
+        <button type="submit" class="admin-button">Save Menu</button>
+    </form>
+</div>
+{% endblock %}
